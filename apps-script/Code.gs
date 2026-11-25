@@ -33,7 +33,7 @@ var PROP_PUBLIC_URL = 'APP_PUBLIC_URL';
 /**
  * Run ONCE in the Google Apps Script editor by the Family Admin.
  * Creates `FamilyGazette/{Photos,Gazettes,.app-cache/thumbs}`, random HMAC secret,
- * default invite code, and initial `family-db.json` if absent.
+ * high-entropy invite code in Script Properties, and initial `family-db.json` if absent.
  */
 function initializeFamilyGazette() {
   var props = PropertiesService.getScriptProperties();
@@ -51,13 +51,13 @@ function initializeFamilyGazette() {
 
   var inviteCode = props.getProperty(PROP_INVITE_CODE);
   if (!inviteCode) {
-    inviteCode = 'FAM-' + new Date().getFullYear();
+    inviteCode = 'FAM-' + generateRandomHex_(6).toUpperCase();
     props.setProperty(PROP_INVITE_CODE, inviteCode);
   }
 
   var dbFile = findFileInFolder_(rootFolder, DB_FILENAME);
   if (!dbFile) {
-    var emptyDb = createEmptyDb_(inviteCode);
+    var emptyDb = createEmptyDb_('');
     rootFolder.createFile(DB_FILENAME, JSON.stringify(emptyDb, null, 2), MimeType.PLAIN_TEXT);
   }
 
@@ -91,21 +91,11 @@ function installDailyReminderTrigger() {
 function doGet() {
   var props = PropertiesService.getScriptProperties();
   var configured = Boolean(props.getProperty(PROP_ROOT_FOLDER_ID));
-  var familyName = '';
-  if (configured) {
-    try {
-      var db = readDb_();
-      familyName = db.settings && db.settings.familyName ? db.settings.familyName : '';
-    } catch (e) {
-      // ignore read errors on health probe
-    }
-  }
   return jsonResponse_({
     ok: true,
     app: 'FamilyGazette',
     version: 1,
     configured: configured,
-    familyName: familyName,
   });
 }
 
@@ -115,9 +105,6 @@ function doPost(e) {
     var req = JSON.parse(raw);
     var action = req.action || '';
 
-    if (action === 'ping') {
-      return handlePing_();
-    }
     if (action === 'getPublicGazette') {
       return handleGetPublicGazette_(req);
     }
@@ -128,6 +115,9 @@ function doPost(e) {
     // All remaining actions require a valid Family Invite Code
     verifyInviteCode_(req.inviteCode);
 
+    if (action === 'ping') {
+      return handlePing_();
+    }
     if (action === 'bootstrap') {
       return handleBootstrap_();
     }
@@ -855,6 +845,19 @@ function isProfileAdmin_(profileId, profiles) {
 
 function filterDbForBootstrap_(db) {
   var copy = cloneJson_(db);
+  if (copy.settings) {
+    copy.settings.inviteCode = '';
+  }
+  copy.profiles = (copy.profiles || []).map(function (p) {
+    if (!p || typeof p !== 'object') return p;
+    var safeProfile = cloneJson_(p);
+    delete safeProfile.email;
+    return safeProfile;
+  });
+  copy.posts = [];
+  copy.comments = [];
+  copy.media = [];
+  copy.rememberedPeople = [];
   copy.messages = [];
   copy.messageReplies = [];
   copy.subscribers = [];
@@ -883,6 +886,10 @@ function filterDbForProfile_(db, profileId) {
       return s && s.profileId === profileId;
     });
   }
+
+  if (copy.settings) {
+    copy.settings.inviteCode = '';
+  }
   return copy;
 }
 
@@ -891,6 +898,12 @@ function mergeDatabasesServer_(serverDb, incomingDb, authProfileId) {
   var mergedSettings = isAdmin
     ? mergeSettings_(serverDb.settings, incomingDb.settings)
     : serverDb.settings;
+
+  // Never store or overwrite FAMILY_INVITE_CODE inside family-db.json
+  if (mergedSettings) {
+    mergedSettings = cloneJson_(mergedSettings);
+    mergedSettings.inviteCode = '';
+  }
 
   // Preserve other users' private messages outside caller visibility
   var serverMsgMap = {};
@@ -938,13 +951,6 @@ function mergeDatabasesServer_(serverDb, incomingDb, authProfileId) {
           return s && s.profileId === authProfileId;
         }),
       );
-
-  if (isAdmin && mergedSettings && mergedSettings.inviteCode) {
-    PropertiesService.getScriptProperties().setProperty(
-      PROP_INVITE_CODE,
-      String(mergedSettings.inviteCode).trim(),
-    );
-  }
 
   return {
     schemaVersion: 1,
@@ -1269,7 +1275,7 @@ function readDb_() {
   var root = ensureRootFolder_(props);
   var file = findFileInFolder_(root, DB_FILENAME);
   if (!file) {
-    var fresh = createEmptyDb_(props.getProperty(PROP_INVITE_CODE) || 'FAM-2026');
+    var fresh = createEmptyDb_('');
     root.createFile(DB_FILENAME, JSON.stringify(fresh, null, 2), MimeType.PLAIN_TEXT);
     return fresh;
   }

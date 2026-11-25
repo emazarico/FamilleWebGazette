@@ -45,10 +45,10 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({ open, onClose })
         resolveEffectiveAppsScriptUrl(null, null, import.meta.env.VITE_APPS_SCRIPT_URL) ||
         '',
     );
-    setInviteCode(syncConfig.familyInviteCode || db.settings.inviteCode || '');
+    setInviteCode(syncConfig.mode === 'apps-script' ? syncConfig.familyInviteCode : '');
     setErrorMsg(null);
     setConfirmDisconnect(false);
-  }, [open, syncConfig.appsScriptUrl, syncConfig.familyInviteCode, db.settings.inviteCode]);
+  }, [open, syncConfig.mode, syncConfig.appsScriptUrl, syncConfig.familyInviteCode]);
 
   const isConnected = syncConfig.mode === 'apps-script';
 

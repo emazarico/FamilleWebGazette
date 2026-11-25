@@ -10,7 +10,7 @@ export function createEmptyDatabase(): FamilyDatabase {
     settings: {
       id: 'family_settings',
       familyName: 'Notre Famille',
-      inviteCode: 'FAM-2026',
+      inviteCode: '',
       gazetteTitle: 'La Gazette de la Famille',
       gazetteSubtitle: 'Souvenirs mensuels partagés ensemble',
       gazetteCadence: 'monthly',
@@ -59,7 +59,7 @@ export function createDemoFamilyDatabase(): FamilyDatabase {
     settings: {
       id: 'family_settings',
       familyName: 'Famille Mazarico',
-      inviteCode: 'MAZARICO-26',
+      inviteCode: '',
       gazetteTitle: 'La Gazette des Mazarico',
       gazetteSubtitle: 'Petits moments & grandes nouvelles',
       gazetteCadence: 'monthly',

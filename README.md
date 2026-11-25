@@ -34,7 +34,7 @@ Relatives **never** need a Google account or the Admin's Gmail password:
 
 1. **Magic Invite Link or Invite Code**:
    - After connecting Drive Sync, the Admin opens **Family & Sync → Invite Family** and shares the **1-click Magic Invite Link** (`?join=1&api=<script-url>&code=<invite-code>`) via WhatsApp, SMS, or email.
-   - Clicking the link (or opening the app and entering the `/exec` URL + Invite Code under **Connect / Join Cloud Family**) pre-configures that browser automatically.
+   - Clicking the link (or entering the `/exec` URL + `FAMILY_INVITE_CODE` manually under **Connect / Join Cloud Family**) saves the connection privately inside that browser's `localStorage` and immediately strips the URL parameters from the address bar.
 2. **Profile Gate & Optional 4–6 Digit PIN**:
    - Each person taps their profile card (or creates a new member profile choosing their name, emoji/theme, preferred UI language `FR`/`EN`, and optional email for Gazette/reminder delivery).
    - Members can protect their profile with an optional **4–6 digit PIN** (stored as salted SHA-256 `familygazette-v1:<profileId>:<pin>`). In connected cloud mode, logging in issues an HMAC-SHA256 signed `sessionToken` valid for 30 days.
@@ -69,5 +69,6 @@ This repository includes [`.github/workflows/deploy-pages.yml`](./.github/workfl
 
 1. Push the contents of this folder to a GitHub repository with default branch `main`.
 2. In **Settings → Pages**, set **Source** to **GitHub Actions**.
-3. *(Optional)* In **Settings → Secrets and variables → Actions → Variables**, add `VITE_APPS_SCRIPT_URL` containing your Apps Script `/exec` URL so relatives visiting your GitHub Pages URL already have the relay endpoint pre-filled.
-4. Every push to `main` runs `npm ci`, `npm test`, builds with `VITE_BASE_PATH='./'`, and deploys `dist/` to GitHub Pages.
+3. Every push to `main` runs `npm ci`, `npm test`, builds with `VITE_BASE_PATH='./'`, and deploys `dist/` to GitHub Pages.
+
+> **Security Note:** Never store your Apps Script `/exec` URL (`VITE_APPS_SCRIPT_URL`) or your `FAMILY_INVITE_CODE` in GitHub Actions variables or source code — anything passed through `VITE_*` is compiled into public static JavaScript. Instead, manage `FAMILY_INVITE_CODE` exclusively in Apps Script **Script Properties** and share access privately with relatives via **Invite Family → Magic Invite Link**.

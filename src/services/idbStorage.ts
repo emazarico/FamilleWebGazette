@@ -52,7 +52,7 @@ export function normalizeLoadedDatabase(raw: unknown): FamilyDatabase | null {
     settings: {
       id: 'family_settings',
       familyName: s?.familyName || 'Notre Famille',
-      inviteCode: s?.inviteCode || 'FAM-2026',
+      inviteCode: s?.inviteCode || '',
       gazetteTitle: s?.gazetteTitle || 'La Gazette de la Famille',
       gazetteSubtitle: s?.gazetteSubtitle,
       gazetteCadence: s?.gazetteCadence || 'monthly',

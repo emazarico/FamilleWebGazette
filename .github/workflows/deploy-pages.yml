@@ -36,7 +36,6 @@ jobs:
       - name: Build static site
         env:
           VITE_BASE_PATH: './'
-          VITE_APPS_SCRIPT_URL: ${{ vars.VITE_APPS_SCRIPT_URL }}
         run: npm run build
 
       - name: Setup Pages
