@@ -1,0 +1,17 @@
+{
+  "name": "FamilyGazette",
+  "short_name": "FamilyGazette",
+  "description": "Private family memory wall, photo collages, private notes, and monthly printable & email Gazette.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#FAF8F5",
+  "theme_color": "#1B5E7C",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="fg-bg" x1="12" y1="8" x2="116" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1B5E7C" />
+      <stop offset="65%" stop-color="#0F766E" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="30" fill="url(#fg-bg)" />
+  <rect x="24" y="26" width="80" height="76" rx="12" fill="#FAF8F5" fill-opacity="0.96" />
+  <rect x="34" y="36" width="38" height="28" rx="5" fill="#1B5E7C" fill-opacity="0.2" />
+  <circle cx="44" cy="45" r="4.5" fill="#D97706" />
+  <path d="M36 62 L47 50 L56 58 L62 53 L70 62 Z" fill="#1B5E7C" />
+  <rect x="78" y="38" width="16" height="5" rx="2.5" fill="#1B5E7C" fill-opacity="0.7" />
+  <rect x="78" y="48" width="16" height="4" rx="2" fill="#78716C" fill-opacity="0.45" />
+  <rect x="78" y="57" width="12" height="4" rx="2" fill="#78716C" fill-opacity="0.45" />
+  <rect x="34" y="72" width="60" height="5" rx="2.5" fill="#1C1917" fill-opacity="0.75" />
+  <rect x="34" y="82" width="44" height="4.5" rx="2.25" fill="#78716C" fill-opacity="0.55" />
+  <circle cx="94" cy="86" r="14" fill="#D97706" />
+  <path d="M94 92 C94 92 87 87.5 87 83.2 C87 81 88.7 79.5 90.6 79.5 C92 79.5 93.2 80.3 94 81.5 C94.8 80.3 96 79.5 97.4 79.5 C99.3 79.5 101 81 101 83.2 C101 87.5 94 92 94 92 Z" fill="#FFFFFF" />
+</svg>
